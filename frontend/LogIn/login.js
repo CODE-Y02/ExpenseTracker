@@ -15,17 +15,17 @@ document.getElementById("form").addEventListener("submit", (e) => {
 async function userLogin(userObj) {
   try {
     let res = await axios.post("http://localhost:3000/user/signin/", userObj);
-    console.log(res);
+    // console.log(res);
 
     alert(res.data.message);
   } catch (error) {
-    console.log(error.response.data);
+    // console.log(error.response.data);
     let msg = document.querySelector("#form .error-message");
     msg.classList.remove("hidden");
     msg.innerText = error.response.data.error;
     setTimeout(() => {
       msg.innerText = "";
       msg.classList.add("hidden");
-    }, 5000);
+    }, 4000);
   }
 }
