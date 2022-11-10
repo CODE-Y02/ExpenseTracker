@@ -18,11 +18,7 @@ document.getElementById("form").addEventListener("submit", (e) => {
 
 async function userSignUp(userObj) {
   try {
-    await axios.post(
-      `https://crudcrud.com/api/${API_KEY}/user
-        `,
-      userObj
-    );
+    await axios.post("http://localhost:3000/user/signup/", userObj);
   } catch (error) {
     console.log(error);
     let msg = document.querySelector("#form .error-message");
