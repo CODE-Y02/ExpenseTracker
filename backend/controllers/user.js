@@ -37,16 +37,21 @@ exports.postSignIn = async (req, res, next) => {
     const password = req.body.password;
 
     let user = await User.findAll({
-      where: { email: email, password: password },
+      where: { email: email },
     });
 
     if (user.length == 0) {
       return res.status(404).json({ success: false, error: "User Not Found" });
     }
 
-    res.json({ success: true, message: "Login successfull" });
+    if (!(user[0].password === password)) {
+      //wrong password
+      return res.status(400).json({ success: false, error: "Wrong password" });
+    }
+
+    res.json({ success: true, message: "Login successfull", user });
     // console.log("\n \n \n");
-    // console.log(user);
+    // console.log(user[0].password == password);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
     // console.log("\n \n \n");
