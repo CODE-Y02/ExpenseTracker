@@ -20,13 +20,13 @@ async function userSignUp(userObj) {
   try {
     await axios.post("http://localhost:3000/user/signup/", userObj);
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data);
     let msg = document.querySelector("#form .error-message");
     msg.classList.remove("hidden");
-    msg.innerText = error.message;
+    msg.innerText = error.response.data.error;
     setTimeout(() => {
       msg.innerText = "";
       msg.classList.add("hidden");
-    }, 3000);
+    }, 5000);
   }
 }
