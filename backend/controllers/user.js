@@ -49,7 +49,7 @@ exports.postSignIn = async (req, res, next) => {
       return res.status(400).json({ success: false, error: "Wrong password" });
     }
 
-    res.json({ success: true, message: "Login successfull", user });
+    res.json({ success: true, message: "Login successfull" });
     // console.log("\n \n \n");
     // console.log(user[0].password == password);
   } catch (error) {
