@@ -46,7 +46,13 @@ exports.postSignIn = async (req, res, next) => {
 
     if (!(user[0].password === password)) {
       //wrong password
-      return res.status(400).json({ success: false, error: "Wrong password" });
+      return res
+        .status(401)
+        .json({
+          success: false,
+          error: "Wrong password",
+          message: "User not authorized",
+        });
     }
 
     res.json({ success: true, message: "Login successfull" });
