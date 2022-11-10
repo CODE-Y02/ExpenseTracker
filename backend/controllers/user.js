@@ -30,3 +30,27 @@ exports.postSignUp = async (req, res, next) => {
     }
   }
 };
+
+exports.postSignIn = async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    let user = await User.findAll({
+      where: { email: email, password: password },
+    });
+
+    if (user.length == 0) {
+      return res.status(404).json({ success: false, error: "User Not Found" });
+    }
+
+    res.json({ success: true, message: "Login successfull" });
+    // console.log("\n \n \n");
+    // console.log(user);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+    // console.log("\n \n \n");
+
+    // console.log(error);
+  }
+};
