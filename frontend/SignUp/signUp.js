@@ -19,7 +19,7 @@ document.getElementById("form").addEventListener("submit", (e) => {
 async function userSignUp(userObj) {
   try {
     await axios.post(
-      `https://crudcrud.com/api/${API_KEY}/user
+      `http://localhost:3000/user/signup
         `,
       userObj
     );
