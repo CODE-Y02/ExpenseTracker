@@ -9,11 +9,15 @@ module.exports.postAddExpense = async (req, res, next) => {
         .json({ success: false, message: "Field Cannot be empty" });
     }
 
-    await Expense.create({ expenseAmount, category, description });
+    let expense = await Expense.create({
+      expenseAmount,
+      category,
+      description,
+    });
 
     res
       .status(201)
-      .json({ success: true, message: "Expense added successfully" });
+      .json({ success: true, message: "Expense added successfully", expense });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -58,24 +62,15 @@ module.exports.getAllExpense = async (req, res, next) => {
 
 module.exports.deleteExpense = async (req, res, next) => {
   try {
+    const expenseId = req.params.expenseId;
+
     if (!expenseId) {
       return res.status(400).json({ success: false, message: "Bad Request" });
     }
 
     let expense = await Expense.findByPk(expenseId);
-
-    if (!expense) {
-      return res.status(404).json({
-        success: false,
-        message: "No Expense Found",
-      });
-    }
-
-    await expense.delete();
-    res.json({
-      success: true,
-      message: "Expense deleted successfully",
-    });
+    await expense.destroy();
+    res.json({ success: true, message: "Expense Deleted Successfully" });
   } catch (error) {
     res.status(500).json({
       success: false,
