@@ -13,8 +13,10 @@ app.use(bodyParser.json());
 
 // import routes
 const userRoutes = require("./routes/user");
+const expenseRouter = require("./routes/expense");
 
 app.use("/user", userRoutes);
+app.use("/expense", expenseRouter);
 
 const startApp = async () => {
   try {
