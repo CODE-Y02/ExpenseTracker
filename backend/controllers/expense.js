@@ -55,3 +55,31 @@ module.exports.getAllExpense = async (req, res, next) => {
     });
   }
 };
+
+module.exports.deleteExpense = async (req, res, next) => {
+  try {
+    if (!expenseId) {
+      return res.status(400).json({ success: false, message: "Bad Request" });
+    }
+
+    let expense = await Expense.findByPk(expenseId);
+
+    if (!expense) {
+      return res.status(404).json({
+        success: false,
+        message: "No Expense Found",
+      });
+    }
+
+    await expense.delete();
+    res.json({
+      success: true,
+      message: "Expense deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
