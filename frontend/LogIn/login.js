@@ -15,11 +15,15 @@ document.getElementById("form").addEventListener("submit", (e) => {
 async function userLogin(userObj) {
   try {
     let res = await axios.post("http://localhost:3000/user/signin/", userObj);
-    // console.log(res);
+    console.log(res);
 
-    alert(res.data.message);
+    if (res.data.success == true) {
+      window.location.replace("/expenses/expenses.html");
+    }
+
+    // alert(res.data.message);
   } catch (error) {
-    // console.log(error.response.data);
+    // console.log(error);
     let msg = document.querySelector("#form .error-message");
     msg.classList.remove("hidden");
     msg.innerText = error.response.data.error;

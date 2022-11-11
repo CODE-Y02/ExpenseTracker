@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense</title>
+  </head>
+  <body>
+    <h1>Expense Tracker</h1>
+    <div class="wrapper">
+      <form id="form" class="box">
+        <div class="inpBox">
+          <label for="amount">Choose Expense Amount</label>
+          <input
+            type="number"
+            id="amount"
+            required
+            class="textBox"
+            placeholder="Enter Amount"
+          />
+        </div>
+        <div class="inpBox">
+          <label for="desc">Choose Expense Description </label>
+          <input type="text" id="description" class="textBox" />
+        </div>
+        <div class="inpBox">
+          <label for="ExpanaseType">Choose Expense Type</label>
+          <select id="ExpanaseType">
+            <option value="food">Food</option>
+            <option value="movie">Movie</option>
+            <option value="fuel">Fuel</option>
+            <option value="other" selected>Other</option>
+          </select>
+        </div>
+        <div class="inpBox">
+          <input type="submit" value="Add Expanase" id="submit" />
+          <!-- <input type="hidden" id="expenseId" /> -->
+        </div>
+      </form>
+      <div class="box2">
+        <ul id="listExpense">
+          <!-- <li>
+              
+              <button onclick="delExp()">Delete</button>
+              <button onclick="EditExp()">Delete</button>
+            </li> -->
+        </ul>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"
+      integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="./expenses.js"></script>
+  </body>
+</html>
