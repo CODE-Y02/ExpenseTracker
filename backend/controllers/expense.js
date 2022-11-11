@@ -29,8 +29,8 @@ module.exports.postAddExpense = async (req, res, next) => {
 module.exports.getAllExpense = async (req, res, next) => {
   try {
     let expenses = await Expense.findAll();
-    // console.log("\n \n \n ");
-    // console.log(expenses);
+    console.log("\n \n \n ");
+    // console.log(req);
 
     if (expenses.length == 0) {
       return res.status(404).json({

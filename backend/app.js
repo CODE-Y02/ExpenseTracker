@@ -15,11 +15,19 @@ app.use(bodyParser.json());
 const userRoutes = require("./routes/user");
 const expenseRouter = require("./routes/expense");
 
+// import models
+const User = require("./models/user");
+const Expense = require("./models/expense");
+
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
 app.use("/user", userRoutes);
 app.use("/expense", expenseRouter);
 
 const startApp = async () => {
   try {
+    // await sequelize.sync({ force: true });
     await sequelize.sync();
 
     app.listen(3000);

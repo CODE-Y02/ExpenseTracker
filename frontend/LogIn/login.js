@@ -23,7 +23,7 @@ async function userLogin(userObj) {
 
     // alert(res.data.message);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     let msg = document.querySelector("#form .error-message");
     msg.classList.remove("hidden");
     msg.innerText = error.response.data.error;
