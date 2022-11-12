@@ -11,47 +11,31 @@ exports.postSignUp = async (req, res, next) => {
 
     // const { name: userName, email, password } = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
 
     const saltRounds = 10;
 
-    // bcrypt.hash(password, saltRounds, async function (err, hash) {
-    //   try {
-    //     if (err) throw new Error("Something Went Wrong");
-
-    //     if (hash) {
-    //       let user = await User.create({ name, email, password: hash });
-    //       return res.json({ success: true, message: "SignUp successful" });
-    //     }
-    //   } catch (error) {
-    //     res.status(409).json({
-    //       success: false,
-    //       message: error.message,
-    //       error: "email already exist ",
-    //     });
-
-    //   }
-    // });
     let generatedHash = await new Promise((resolve, reject) => {
+      // I am  wrapping  it inside promise bexause based on saltRounds computation can take more time
       bcrypt.hash(password, saltRounds, (err, hash) => {
         if (err) reject("Something Went Wrong");
-        //hash; // true or false
         resolve(hash);
       });
     });
 
-    if (generatedHash) {
-      await User.create({ name, email, password: generatedHash });
-      res.json({ success: true, message: "SignUp successful" });
-    } else {
+    await User.create({ name, email, password: generatedHash });
+    res.json({ success: true, message: "SignUp successful" });
+  } catch (error) {
+    // console.log("\n \n \n \n ");
+    // console.log(error);
+    if (error.fields.email) {
+      //email already exist
       return res.status(409).json({
         success: false,
-        error: "email already exist ",
+        error: error.message,
+        message: " Email Already exist ",
       });
     }
-  } catch (error) {
-    console.log("\n \n \n \n ");
-    console.log(error);
 
     res.status(500).json({
       success: false,
