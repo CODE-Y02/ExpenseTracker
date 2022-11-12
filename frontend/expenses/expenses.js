@@ -16,7 +16,15 @@ async function getAll(event) {
   event.preventDefault();
 
   try {
-    let res = await axios.get(`http://localhost:3000/expense`);
+    const { token } = JSON.parse(localStorage.getItem("ExpenseTracker"));
+
+    console.log("TOKEN ====> ", token);
+
+    let res = await axios.get(`http://localhost:3000/expense`, {
+      headers: {
+        Authorization: token,
+      },
+    });
 
     console.log(res.data.expenses);
 
@@ -38,6 +46,8 @@ async function createOrUpdateExpense(e) {
     let description = document.getElementById("description");
     let type = document.getElementById("ExpanaseType");
 
+    const { token } = JSON.parse(localStorage.getItem("ExpenseTracker")); // get token
+
     let expenseObj = {
       expenseAmount: amount.value,
       description: description.value,
@@ -56,7 +66,12 @@ async function createOrUpdateExpense(e) {
       //post
       let response = await axios.post(
         `http://localhost:3000/expense/addExpense`,
-        expenseObj
+        expenseObj,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
       );
 
       //   console.log(response);
@@ -89,9 +104,18 @@ function removeFromScreen(id) {
 
 // DELETE
 async function delExp(id) {
+  let { token } = JSON.parse(localStorage.getItem("ExpenseTracker")); // get token
   //delete
   try {
-    await axios.delete(`http://localhost:3000/expense/delete/${id}`);
+    await axios.delete(
+      `http://localhost:3000/expense/delete/${id}`,
+
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
     console.log("deleting ");
     removeFromScreen(id);
   } catch (error) {

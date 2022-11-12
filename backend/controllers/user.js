@@ -72,7 +72,7 @@ exports.postSignIn = async (req, res, next) => {
       }
     });
 
-    console.log("\n \n \n");
+    // console.log("\n \n \n");
     // console.log();
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -83,5 +83,8 @@ exports.postSignIn = async (req, res, next) => {
 };
 
 function generateAccessToken(id, name) {
-  return jwt.sign({ userId: id, name: name }, process.env.SECRET_KEY);
+  return jwt.sign(
+    { userId: id, name: name },
+    process.env.ACCESS_TOKEN_SECRET_KEY
+  );
 }
