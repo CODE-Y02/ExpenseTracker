@@ -9,30 +9,54 @@ exports.postSignUp = async (req, res, next) => {
     let email = req.body.email;
     let password = req.body.password;
 
+    // const { name: userName, email, password } = req.body;
+
+    console.log(req.body);
+
     const saltRounds = 10;
-    bcrypt.hash(password, saltRounds, async function (err, hash) {
-      console.log(err);
-      // Store hash in your password DB.
-      await User.create({ name, email, password: hash });
-      res.json({ success: true, message: "SignUp successful" });
+
+    // bcrypt.hash(password, saltRounds, async function (err, hash) {
+    //   try {
+    //     if (err) throw new Error("Something Went Wrong");
+
+    //     if (hash) {
+    //       let user = await User.create({ name, email, password: hash });
+    //       return res.json({ success: true, message: "SignUp successful" });
+    //     }
+    //   } catch (error) {
+    //     res.status(409).json({
+    //       success: false,
+    //       message: error.message,
+    //       error: "email already exist ",
+    //     });
+
+    //   }
+    // });
+    let generatedHash = await new Promise((resolve, reject) => {
+      bcrypt.hash(password, saltRounds, (err, hash) => {
+        if (err) reject("Something Went Wrong");
+        //hash; // true or false
+        resolve(hash);
+      });
     });
+
+    if (generatedHash) {
+      await User.create({ name, email, password: generatedHash });
+      res.json({ success: true, message: "SignUp successful" });
+    } else {
+      return res.status(409).json({
+        success: false,
+        error: "email already exist ",
+      });
+    }
   } catch (error) {
     console.log("\n \n \n \n ");
     console.log(error);
 
-    if (error.fields) {
-      // email already exist
-      res.status(409).json({
-        success: false,
-        message: error.message,
-        error: "email already exist ",
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
