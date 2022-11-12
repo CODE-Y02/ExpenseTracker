@@ -116,12 +116,21 @@ async function delExp(id) {
     );
     console.log("deleting ");
     removeFromScreen(id);
+    alert("Expense Deleted");
   } catch (error) {
-    console.log("delete", error);
+    // console.log("delete", error);
+    let errMsg = document.querySelector(".error-msg ");
+    errMsg.classList.remove("hidden");
+    errMsg.innerText = error.response.data.error;
+    setTimeout(() => {
+      errMsg.innerText = "";
+      errMsg.classList.add("hidden");
+    }, 4000);
   }
 }
 
 // EDIT
+/*
 async function editExp(id) {
   try {
     if (editId) {
@@ -146,3 +155,4 @@ async function editExp(id) {
     console.log("edit function", error);
   }
 }
+*/

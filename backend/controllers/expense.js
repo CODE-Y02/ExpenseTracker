@@ -32,7 +32,8 @@ module.exports.postAddExpense = async (req, res, next) => {
 
 module.exports.getAllExpense = async (req, res, next) => {
   try {
-    let expenses = await Expense.findAll({ where: { userId: req.user.id } });
+    // let expenses = await Expense.findAll({ where: { userId: req.user.id } });
+    let expenses = await Expense.findAll();
     // console.log("\n \n \n ");
     // console.log(req.headers.authorization);
 
@@ -81,6 +82,14 @@ module.exports.deleteExpense = async (req, res, next) => {
         userId: user.id,
       },
     });
+    // console.log("\n \n \n ", expense, "\n \n");
+    if (!expense) {
+      return res.status(401).json({
+        success: false,
+        message: "Expense Does Not Belongs to User",
+        error: " Unauthorized Request",
+      });
+    }
 
     await expense.destroy();
     res.json({ success: true, message: "Expense Deleted Successfully" });
