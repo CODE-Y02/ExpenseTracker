@@ -32,6 +32,7 @@ async function getAll(event) {
     });
   } catch (error) {
     console.log(error);
+    shoewError(error.response.data.error);
   }
 }
 
@@ -80,6 +81,7 @@ async function createOrUpdateExpense(e) {
     type.value = "other";
   } catch (error) {
     console.log(error);
+    shoewError(error.response.data.error);
   }
 }
 
@@ -119,13 +121,7 @@ async function delExp(id) {
     alert("Expense Deleted");
   } catch (error) {
     // console.log("delete", error);
-    let errMsg = document.querySelector(".error-msg ");
-    errMsg.classList.remove("hidden");
-    errMsg.innerText = error.response.data.error;
-    setTimeout(() => {
-      errMsg.innerText = "";
-      errMsg.classList.add("hidden");
-    }, 4000);
+    shoewError(error.response.data.error);
   }
 }
 
@@ -156,3 +152,13 @@ async function editExp(id) {
   }
 }
 */
+
+function shoewError(message) {
+  let errMsg = document.querySelector(".error-msg ");
+  errMsg.classList.remove("hidden");
+  errMsg.innerText = message;
+  setTimeout(() => {
+    errMsg.innerText = "";
+    errMsg.classList.add("hidden");
+  }, 4000);
+}
