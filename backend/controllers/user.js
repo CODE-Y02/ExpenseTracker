@@ -9,38 +9,55 @@ exports.postSignUp = async (req, res, next) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    // const { name: userName, email, password } = req.body;
-
+    console.log("\n \n \n");
+    // console.log(name);
     // console.log(req.body);
 
     const saltRounds = 10;
-
-    let generatedHash = await new Promise((resolve, reject) => {
-      // I am  wrapping  it inside promise bexause based on saltRounds computation can take more time
-      bcrypt.hash(password, saltRounds, (err, hash) => {
-        if (err) reject("Something Went Wrong");
-        resolve(hash);
+    bcrypt.genSalt(saltRounds, (err, salt) => {
+      // if (err) throw new Error("Something Went Wrong");
+      bcrypt.hash(password, salt, (err, hash) => {
+        if (err) throw new Error("Something Went Wrong");
+        User.create({ name, email, password: hash })
+          .then((user) => {
+            res
+              .status(201)
+              .json({ success: true, message: "SignUp successful" });
+          })
+          .catch((error) => {
+            console.log("\n \n \n \n ");
+            console.log(error);
+            return res.status(409).json({
+              success: false,
+              error: error.message,
+              message: " Email Already exist ",
+            });
+          });
       });
     });
 
-    await User.create({ name, email, password: generatedHash });
-    res.json({ success: true, message: "SignUp successful" });
+    console.log("\n \n \n \n  Generated Hash ==> \n");
+    // console.log(generatedHash);
+    console.log("\n \n \n \n ");
+    // await User.create({ name, email, password: generatedHash });
+    // res.json({ success: true, message: "SignUp successful" });
   } catch (error) {
     // console.log("\n \n \n \n ");
-    // console.log(error);
-    if (error.fields.email) {
-      //email already exist
-      return res.status(409).json({
-        success: false,
-        error: error.message,
-        message: " Email Already exist ",
-      });
-    }
+    console.log(error);
 
+    // if (error.fields.email) {
+    //   //email already exist
+    //   return res.status(409).json({
+    //     success: false,
+    //     error: error.message,
+    //     message: " Email Already exist ",
+    //   });
+    // } else {
     res.status(500).json({
       success: false,
       message: error.message,
     });
+    // }
   }
 };
 
