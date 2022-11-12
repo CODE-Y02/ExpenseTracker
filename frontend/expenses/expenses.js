@@ -18,8 +18,6 @@ async function getAll(event) {
   try {
     const { token } = JSON.parse(localStorage.getItem("ExpenseTracker"));
 
-    console.log("TOKEN ====> ", token);
-
     let res = await axios.get(`http://localhost:3000/expense`, {
       headers: {
         Authorization: token,
