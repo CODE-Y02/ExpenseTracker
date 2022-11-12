@@ -33,7 +33,7 @@ module.exports.postAddExpense = async (req, res, next) => {
 module.exports.getAllExpense = async (req, res, next) => {
   try {
     let expenses = await Expense.findAll({ where: { userId: req.user.id } });
-    console.log("\n \n \n ");
+    // console.log("\n \n \n ");
     // console.log(req.headers.authorization);
 
     if (expenses.length == 0) {
@@ -66,8 +66,6 @@ module.exports.getAllExpense = async (req, res, next) => {
 
 module.exports.deleteExpense = async (req, res, next) => {
   try {
-    // console.log("\n \n \n  ", req.body, "\n ", req.headers, " \n");
-
     const expenseId = req.params.expenseId;
 
     if (!expenseId) {
@@ -75,7 +73,7 @@ module.exports.deleteExpense = async (req, res, next) => {
     }
     let user = req.user;
 
-    console.log(user);
+    // console.log(user);
 
     let expense = await Expense.findOne({
       where: {
@@ -83,7 +81,7 @@ module.exports.deleteExpense = async (req, res, next) => {
         userId: user.id,
       },
     });
-    // console.log(expense);
+
     await expense.destroy();
     res.json({ success: true, message: "Expense Deleted Successfully" });
   } catch (error) {
