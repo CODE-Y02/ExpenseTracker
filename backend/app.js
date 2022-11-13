@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 // import routes
 const userRoutes = require("./routes/user");
 const expenseRouter = require("./routes/expense");
+const paymentRouter = require("./routes/payment");
 
 // import models
 const User = require("./models/user");
@@ -24,6 +25,7 @@ Expense.belongsTo(User);
 
 app.use("/user", userRoutes);
 app.use("/expense", expenseRouter);
+app.use("/payment", paymentRouter);
 
 const startApp = async () => {
   try {

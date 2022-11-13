@@ -10,6 +10,12 @@ window.addEventListener("DOMContentLoaded", getAll);
 //On submit
 form.addEventListener("submit", (e) => createOrUpdateExpense(e));
 
+// on buy premium
+document.getElementById("buy-premium").addEventListener("click", (e) => {
+  e.preventDefault();
+  window.location.href = "/buyMembership/payment.html";
+});
+
 //getAll
 
 async function getAll(event) {
