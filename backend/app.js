@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 const userRoutes = require("./routes/user");
 const expenseRouter = require("./routes/expense");
 const paymentRouter = require("./routes/payment");
-
+const passwordRoute = require("./routes/password");
 // import models
 const User = require("./models/user");
 const Expense = require("./models/expense");
@@ -30,6 +30,8 @@ Order.belongsTo(User);
 app.use("/user", userRoutes);
 app.use("/expense", expenseRouter);
 app.use("/payment", paymentRouter);
+
+app.use("/password", passwordRoute);
 
 const startApp = async () => {
   try {

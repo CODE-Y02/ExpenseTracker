@@ -10,6 +10,7 @@ const authentication = async (req, res, next) => {
     // console.log("\n \n ", userObj);
 
     let user = await User.findByPk(userObj.userId);
+
     // console.log(user);
     req.user = user; // very Imp
     next();
