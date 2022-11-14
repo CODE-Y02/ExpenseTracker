@@ -10,12 +10,6 @@ window.addEventListener("DOMContentLoaded", getAll);
 //On submit
 form.addEventListener("submit", (e) => createOrUpdateExpense(e));
 
-// on buy premium
-document.getElementById("buy-premium").addEventListener("click", (e) => {
-  e.preventDefault();
-  window.location.href = "/buyMembership/payment.html";
-});
-
 //getAll
 
 async function getAll(event) {
@@ -168,3 +162,56 @@ function shoewError(message) {
     errMsg.classList.add("hidden");
   }, 4000);
 }
+
+document.getElementById("rzp-button1").onclick = async function (e) {
+  e.preventDefault();
+  try {
+    // order Id from backend
+    const responseFromServer = await axios.post(
+      "http://localhost:3000/payment/create/orderId",
+      {
+        amount: 500, // pass in rs --> backend will handle rest
+      }
+    );
+
+    const { orderId, amount, currency } = responseFromServer.data;
+
+    // options
+    let options = {
+      key: "rzp_test_bnWvn8yH1pEuty", // Enter the Key ID generated from the Dashboard
+      amount,
+      currency,
+      name: "Acme Corp",
+      description: "Test Transaction",
+      image: "https://example.com/your_logo",
+      order_id: orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      handler: function (response) {
+        console.log(response);
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature);
+      },
+      prefill: {
+        name: "Tony Stark",
+        email: "IronMan@A.com",
+        contact: "9999999999",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        backgroundColor: "#ffadad",
+        color: "#1d1828",
+      },
+    };
+
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+
+    rzp1.on("payment.failed", function (response) {
+      console.log(response);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

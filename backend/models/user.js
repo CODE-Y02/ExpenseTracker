@@ -25,9 +25,10 @@ const User = sequelize.define("user", {
     allowNull: false,
   },
 
-  isPremiumMember: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
+  membership: {
+    type: Sequelize.DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "free",
   },
 });
 

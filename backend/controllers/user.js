@@ -53,6 +53,8 @@ exports.postSignIn = async (req, res, next) => {
 
     const hash = user[0].password;
 
+    const { membership } = user[0];
+
     bcrypt.compare(password, hash, function (err, result) {
       // result == true
 
@@ -62,6 +64,7 @@ exports.postSignIn = async (req, res, next) => {
           success: true,
           message: "Login successfull",
           Token: generateAccessToken(user[0].id, user[0].name),
+          membership,
         });
       } else {
         return res.status(401).json({
