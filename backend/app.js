@@ -24,8 +24,8 @@ const Order = require("./models/order");
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
+User.hasMany(Order);
 Order.belongsTo(User);
-User.hasOne(Order); // we only have one membership per user
 
 app.use("/user", userRoutes);
 app.use("/expense", expenseRouter);

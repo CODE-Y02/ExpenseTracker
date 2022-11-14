@@ -20,7 +20,11 @@ async function userLogin(userObj) {
     if (res.data.success == true) {
       localStorage.setItem(
         "ExpenseTracker",
-        JSON.stringify({ token: res.data.Token, loginAt: Date.now() })
+        JSON.stringify({
+          token: res.data.Token,
+          loginAt: Date.now(),
+          membership: res.data.membership,
+        })
       );
       window.location.replace("/expenses/expenses.html");
     }

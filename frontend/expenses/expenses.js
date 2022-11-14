@@ -5,7 +5,19 @@ let editId = undefined;
 let form = document.getElementById("form");
 
 //on dom loaded
-window.addEventListener("DOMContentLoaded", getAll);
+window.addEventListener("DOMContentLoaded", (e) => {
+  const { token, membership } = JSON.parse(
+    localStorage.getItem("ExpenseTracker")
+  );
+
+  console.log(membership);
+  if (membership === "premium") {
+    setPremiumMode();
+  }
+  disolayCard("Welcome to Expense tracker ", 2000);
+
+  getAll(e);
+});
 
 //On submit
 form.addEventListener("submit", (e) => createOrUpdateExpense(e));
@@ -16,7 +28,9 @@ async function getAll(event) {
   event.preventDefault();
 
   try {
-    const { token } = JSON.parse(localStorage.getItem("ExpenseTracker"));
+    const { token, membership } = JSON.parse(
+      localStorage.getItem("ExpenseTracker")
+    );
 
     let res = await axios.get(`http://localhost:3000/expense`, {
       headers: {
@@ -166,16 +180,23 @@ function shoewError(message) {
 document.getElementById("rzp-button1").onclick = async function (e) {
   e.preventDefault();
   try {
+    const localData = JSON.parse(localStorage.getItem("ExpenseTracker")); // get token
+    const { token } = localData;
     // order Id from backend
     const responseFromServer = await axios.post(
       "http://localhost:3000/payment/create/orderId",
       {
         amount: 500, // pass in rs --> backend will handle rest
+      },
+
+      {
+        headers: {
+          Authorization: token,
+        },
       }
     );
 
-    const { orderId, amount, currency } = responseFromServer.data;
-
+    const { orderId, amount, currency, receipt } = responseFromServer.data;
     // options
     let options = {
       key: "rzp_test_bnWvn8yH1pEuty", // Enter the Key ID generated from the Dashboard
@@ -187,9 +208,32 @@ document.getElementById("rzp-button1").onclick = async function (e) {
       order_id: orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
       handler: function (response) {
         console.log(response);
-        alert(response.razorpay_payment_id);
-        alert(response.razorpay_order_id);
-        alert(response.razorpay_signature);
+
+        axios
+          .post(
+            "http://localhost:3000/payment/verify",
+            { ...response, receipt },
+            {
+              headers: {
+                Authorization: token,
+              },
+            }
+          )
+          .then((data) => {
+            console.log("verified ==> ", data.data);
+            // set primium mode
+            console.log("verified  local data==> ", {});
+
+            let newLocalData = { ...localData, membership: "premium" };
+
+            localStorage.setItem(
+              "ExpenseTracker",
+              JSON.stringify(newLocalData)
+            );
+            setPremiumMode();
+            disolayCard("now You Are Premium Member", 3000);
+          })
+          .catch((er) => console.log(er));
       },
       prefill: {
         name: "Tony Stark",
@@ -215,3 +259,32 @@ document.getElementById("rzp-button1").onclick = async function (e) {
     console.log(error);
   }
 };
+
+function setPremiumMode() {
+  document.getElementById("rzp-button1").remove();
+  let toggleBox = document.querySelector(".toggle-wrap");
+  toggleBox.classList.remove("hidden");
+}
+
+function disolayCard(message, timeout) {
+  let div = document.getElementById("popupCard");
+  console.log(message);
+
+  div.innerHTML = `<p>${message}</p>`;
+
+  div.classList.remove("hidden");
+  div.classList.add("flex-center");
+
+  setTimeout(() => {
+    div.innerHTML = "";
+
+    div.classList.add("hidden");
+    div.classList.remove("flex-center");
+  }, timeout);
+}
+
+const darkToggle = document.getElementById("toggle");
+
+darkToggle.addEventListener("change", (e) => {
+  document.body.classList.toggle("dark", e.target.checked);
+});
