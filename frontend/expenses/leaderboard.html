@@ -6,12 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leaderboard</title>
   </head>
-  <style></style>
+  <style>
+    .hidden {
+      display: none;
+    }
+    .cancel-top {
+      float: right;
+      margin: 10px;
+      padding: 10px;
+      font-size: 24px;
+      background: antiquewhite;
+      cursor: pointer;
+    }
+    #user-expense {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: burlywood;
+      height: 100vh;
+      overflow-y: scroll;
+    }
+  </style>
+
   <body>
     <nav>
       <a href="/expenses/expenses.html">go back</a>
     </nav>
     <h1>Leaderboard</h1>
+    <ol id="leaderboard-list"></ol>
+    <div id="user-expense" class="hidden">
+      <h2></h2>
+      <p class="cancel-top btn">X</p>
+      <ol id="exp-list"></ol>
+    </div>
 
     <!-- axios  -->
     <script
@@ -21,30 +50,6 @@
       referrerpolicy="no-referrer"
     ></script>
     <!-- js  -->
-    <script>
-      window.addEventListener("DOMContentLoaded", (e) => {
-        // fetch data from backend
-        const { token } = JSON.parse(localStorage.getItem("ExpenseTracker"));
-        getleaderBoard(token);
-      });
-
-      async function getleaderBoard(token) {
-        try {
-          let usersInLeaderboard = await axios.get(
-            "http://localhost:3000/leaderboard/showAll",
-            {
-              headers: {
-                Authorization: token,
-              },
-            }
-          );
-
-          // displaying each
-          console.log(usersInLeaderboard);
-        } catch (error) {
-          console.log("\n error in getleaderbord ==>", error);
-        }
-      }
-    </script>
+    <script src="leaderboard.js"></script>
   </body>
 </html>
