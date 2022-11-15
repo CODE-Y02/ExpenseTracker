@@ -16,6 +16,8 @@ const userRoutes = require("./routes/user");
 const expenseRouter = require("./routes/expense");
 const paymentRouter = require("./routes/payment");
 const passwordRoute = require("./routes/password");
+const leaderBoardRoute = require("./routes/leaderboard");
+
 // import models
 const User = require("./models/user");
 const Expense = require("./models/expense");
@@ -36,6 +38,7 @@ app.use("/expense", expenseRouter);
 app.use("/payment", paymentRouter);
 
 app.use("/password", passwordRoute);
+app.use("/leaderboard", leaderBoardRoute);
 
 const startApp = async () => {
   try {

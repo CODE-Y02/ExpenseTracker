@@ -31,7 +31,7 @@
       async function getleaderBoard(token) {
         try {
           let usersInLeaderboard = await axios.get(
-            "http://localhost:3000/leaderboard/show",
+            "http://localhost:3000/leaderboard/showAll",
             {
               headers: {
                 Authorization: token,
