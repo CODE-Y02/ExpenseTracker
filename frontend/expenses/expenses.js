@@ -264,6 +264,13 @@ function setPremiumMode() {
   document.getElementById("rzp-button1").remove();
   let toggleBox = document.querySelector(".toggle-wrap");
   toggleBox.classList.remove("hidden");
+
+  let leaderboardBtn = document.getElementById("leaderboard");
+
+  leaderboardBtn.classList.remove("hidden");
+  leaderboardBtn.style.display = "block";
+  leaderboardBtn.style.float = "right";
+  leaderboardBtn.removeAttribute("disabled");
 }
 
 function disolayCard(message, timeout) {
@@ -287,4 +294,10 @@ const darkToggle = document.getElementById("toggle");
 
 darkToggle.addEventListener("change", (e) => {
   document.body.classList.toggle("dark", e.target.checked);
+});
+
+document.getElementById("leaderboard").addEventListener("click", (e) => {
+  e.preventDefault();
+
+  window.location = "leaderboard.html";
 });

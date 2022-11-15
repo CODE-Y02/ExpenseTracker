@@ -56,12 +56,12 @@ input {
   font-size: 24px;
 
   border: none;
-  background-color: rgb(63, 63, 63);
+  background-color: transparent;
   border-radius: 0.5rem;
-  border-bottom: 2px solid wheat;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.342);
 }
-input:focus {
-  background-color: rgb(21, 20, 20);
+input:focus,
+input:active {
   color: yellow;
 }
 
