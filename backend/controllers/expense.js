@@ -1,14 +1,9 @@
 const Expense = require("../models/expense");
+const LeaderBoard = require("../models/leaderboard");
 
 module.exports.postAddExpense = async (req, res, next) => {
   try {
-    // console.log("\n \n \n  ", req.user, "\n ", req.headers, " \n");
-
     const { expenseAmount, category, description } = req.body;
-
-    // console.log("\n\n\n\n");
-    // console.log(expenseAmount, category, description);
-    // console.log("\n\n\n\n");
 
     if (!expenseAmount || !category) {
       return res
@@ -16,18 +11,26 @@ module.exports.postAddExpense = async (req, res, next) => {
         .json({ success: false, message: "Field Cannot be empty" });
     }
 
-    // let expense = await Expense.create({
-    //   userId: user.id,
-    //   expenseAmount,
-    //   category,
-    //   description,
-    // });
-
     let expense = await req.user.createExpense({
       expenseAmount,
       category,
       description,
     });
+
+    //  leaderboard
+
+    let leaderBoard = await req.user.getLeaderBoard();
+    console.log("\n\n leaderboard=====> \n\n", leaderBoard, "\n\n");
+    if (!leaderBoard) {
+      leaderBoard = await req.user.createLeaderBoard({
+        userName: req.user.name,
+      });
+    }
+
+    console.log("\n\n leaderboard=====> \n\n", leaderBoard, "\n\n");
+
+    let total = leaderBoard.totalExpenses + Number(expenseAmount);
+    leaderBoard.update({ totalExpenses: total });
 
     res
       .status(201)
@@ -101,6 +104,18 @@ module.exports.deleteExpense = async (req, res, next) => {
         error: " Unauthorized Request",
       });
     }
+
+    //  leaderboard
+
+    let leaderBoard = await req.user.getLeaderBoard();
+    if (!leaderBoard) {
+      leaderBoard = await req.user.createLeaderBoard({
+        userName: req.user.name,
+      });
+    }
+
+    let total = leaderBoard.totalExpenses - Number(expense.expenseAmount);
+    leaderBoard.update({ totalExpenses: total });
 
     await expense.destroy();
     res.json({ success: true, message: "Expense Deleted Successfully" });

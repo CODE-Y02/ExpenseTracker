@@ -20,12 +20,16 @@ const passwordRoute = require("./routes/password");
 const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
+const LeaderBoard = require("./models/leaderboard");
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+LeaderBoard.belongsTo(User);
+User.hasOne(LeaderBoard);
 
 app.use("/user", userRoutes);
 app.use("/expense", expenseRouter);
