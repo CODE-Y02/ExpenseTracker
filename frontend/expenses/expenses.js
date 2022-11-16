@@ -269,7 +269,7 @@ function setPremiumMode() {
 
   leaderboardBtn.classList.remove("hidden");
   leaderboardBtn.style.display = "block";
-  leaderboardBtn.style.float = "right";
+
   leaderboardBtn.removeAttribute("disabled");
 }
 
@@ -289,15 +289,3 @@ function disolayCard(message, timeout) {
     div.classList.remove("flex-center");
   }, timeout);
 }
-
-const darkToggle = document.getElementById("toggle");
-
-darkToggle.addEventListener("change", (e) => {
-  document.body.classList.toggle("dark", e.target.checked);
-});
-
-document.getElementById("leaderboard").addEventListener("click", (e) => {
-  e.preventDefault();
-
-  window.location = "leaderboard.html";
-});

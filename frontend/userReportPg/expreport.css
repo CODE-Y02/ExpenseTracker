@@ -1,0 +1,12 @@
+main {
+  padding: 0.5rem 2rem;
+}
+
+/* table styling  */
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
