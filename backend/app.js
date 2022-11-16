@@ -23,6 +23,7 @@ const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 const LeaderBoard = require("./models/leaderboard");
+const ForgotPassword = require("./models/forgotPassword");
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
@@ -32,6 +33,9 @@ Order.belongsTo(User);
 
 LeaderBoard.belongsTo(User);
 User.hasOne(LeaderBoard);
+
+User.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(User);
 
 app.use("/user", userRoutes);
 app.use("/expense", expenseRouter);

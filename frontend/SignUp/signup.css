@@ -55,8 +55,11 @@ input {
   margin-bottom: 1rem;
   font-size: 24px;
 
+  background-color: black;
+  color: white;
+
   border: none;
-  background-color: transparent;
+
   border-radius: 0.5rem;
   border-bottom: 2px solid rgba(255, 255, 255, 0.342);
 }
