@@ -56,4 +56,20 @@ function createExpenseIntable(date, Category, Expense, Description) {
 }
 
 // download function
-document.getElementById("download").addEventListener("click", (e) => {});
+document.getElementById("download").addEventListener("click", (e) => {
+  downloadFile();
+});
+
+async function downloadFile() {
+  const { token } = JSON.parse(localStorage.getItem("ExpenseTracker"));
+
+  try {
+    let csv = await axios.get("http://localhost:3000/expense/download", {
+      headers: {
+        authorization: token,
+      },
+    });
+
+    console.log(csv.data);
+  } catch (error) {}
+}
