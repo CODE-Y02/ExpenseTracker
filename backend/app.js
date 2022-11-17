@@ -44,6 +44,8 @@ app.use("/payment", paymentRouter);
 app.use("/password", passwordRoute);
 app.use("/leaderboard", leaderBoardRoute);
 
+// /expense-report/-->  download --> get all expense of user and download them as list
+
 const startApp = async () => {
   try {
     // await sequelize.sync({ force: true });

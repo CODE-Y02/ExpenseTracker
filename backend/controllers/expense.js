@@ -58,12 +58,15 @@ module.exports.getAllExpense = async (req, res, next) => {
     }
 
     expenses = expenses.map((expenseObj) => {
-      const { id, expenseAmount, category, description } = expenseObj;
+      const { id, expenseAmount, category, description, updatedAt, createdAt } =
+        expenseObj;
       return {
         id,
         expenseAmount,
         category,
         description,
+        createdAt,
+        updatedAt,
       };
     });
 
