@@ -163,9 +163,18 @@ module.exports.downloadExpenseReport = async (req, res) => {
 
     let csv = await convertFromJSON_to_CSV(expenses);
     //we are gonna send this csv to aws
-    let fileName = "Expense.csv";
-    csv = JSON.stringify(csv);
-    let fileUrl = uploadToS3(csv, fileName); // data and filename
+
+    let fileName = `Expense${req.user.id}/${new Date()}.csv`; // will creare folder --> ExpenseUSERID -->  filennameusingDate.csv
+    // csv = JSON.stringify(csv);
+    let fileUrl = await uploadToS3(csv, fileName); // data and filename
+
+    // console.log("\n\n=================> url \n", fileUrl, "\n\n");
+
+    if (!fileUrl) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Source Not Found" });
+    }
 
     res.status(200).json({ success: true, fileName, fileUrl });
   } catch (error) {
@@ -184,18 +193,22 @@ function uploadToS3(data, fileName) {
     secretAccessKey: IAM_USER_SECRET_KEY,
   });
 
-  s3bucket.createBucket(() => {
-    var params = {
-      Bucket: BUCKET_NAME,
-      Key: fileName,
-      Body: data,
-    };
+  var params = {
+    Bucket: BUCKET_NAME,
+    Key: fileName,
+    Body: data,
+    ACL: "public-read",
+  };
 
+  return new Promise((resolve, reject) => {
     s3bucket.upload(params, (err, s3successResponse) => {
       if (err) {
-        console.log("\n \n something Went wrong ", err);
+        // console.log("\n \n something Went wrong ", err);
+        reject(err);
       } else {
-        console.log("\n \n Success ", s3successResponse);
+        // console.log("\n \n Success ", s3successResponse);
+        resolve(s3successResponse.Location);
+        // return s3successResponse.Location;
       }
     });
   });
