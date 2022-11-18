@@ -24,6 +24,7 @@ const Expense = require("./models/expense");
 const Order = require("./models/order");
 const LeaderBoard = require("./models/leaderboard");
 const ForgotPassword = require("./models/forgotPassword");
+const Download = require("./models/download");
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
@@ -36,6 +37,9 @@ User.hasOne(LeaderBoard);
 
 User.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(User);
+
+User.hasMany(Download);
+Download.belongsTo(User);
 
 app.use("/user", userRoutes);
 app.use("/expense", expenseRouter);
