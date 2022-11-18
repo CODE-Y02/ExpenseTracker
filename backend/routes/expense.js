@@ -66,13 +66,19 @@ router.get("/download", userAuth.authentication, async (req, res) => {
 
       console.log(csv);
 
-      fs.writeFile("./files/report.csv", csv, (err) => {
-        if (err) res.json({ success: false });
+      fs.writeFile(`./files/${user.email}.csv`, csv, (err) => {
+        if (err) res.json({ success: false, err });
 
-        res.attachment(`${user.name}_ExpenseReport.csv`).status(200).send(csv);
+        res.status(200).json({
+          filename: `dataReport_${user.email}`,
+
+          fileUrl: path.join(rootPath, `/files/${user.email}.csv`),
+        });
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
 });
 
 module.exports = router;

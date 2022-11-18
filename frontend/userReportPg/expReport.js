@@ -64,12 +64,20 @@ async function downloadFile() {
   const { token } = JSON.parse(localStorage.getItem("ExpenseTracker"));
 
   try {
-    let csv = await axios.get("http://localhost:3000/expense/download", {
+    let response = await axios.get("http://localhost:3000/expense/download", {
       headers: {
         authorization: token,
       },
     });
 
-    console.log(csv.data);
-  } catch (error) {}
+    console.log(response);
+
+    let a = document.createElement("a");
+
+    a.href = response.data.fileUrl;
+    a.download = response.data.filename;
+    a.click();
+  } catch (error) {
+    console.log(error);
+  }
 }

@@ -6,7 +6,7 @@ const { parse } = require("json2csv");
 exports.convertFromJSON_to_CSV = async (json) => {
   try {
     const csv = parse(json);
-    console.log(csv);
+    // console.log(csv);
     return csv;
   } catch (err) {
     console.error(err);
