@@ -20,6 +20,28 @@ const authentication = async (req, res, next) => {
   }
 };
 
+const isPremiumUser = async (req, res, next) => {
+  try {
+    const user = req.user;
+    if (user.membership == "premium") {
+      next();
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Buy Premium Membership To access this feature",
+      });
+    }
+  } catch (error) {
+    console.log("\n Error in premium auth\n ===> ", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error,
+    });
+  }
+};
+
 module.exports = {
   authentication,
+  isPremiumUser,
 };

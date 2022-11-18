@@ -1,5 +1,9 @@
 const Expense = require("../models/expense");
-const LeaderBoard = require("../models/leaderboard");
+
+const { convertFromJSON_to_CSV } = require("../util/converters");
+
+//aws
+const AWS = require("aws-sdk");
 
 module.exports.postAddExpense = async (req, res, next) => {
   try {
@@ -130,3 +134,69 @@ module.exports.deleteExpense = async (req, res, next) => {
     });
   }
 };
+
+//doenload expense
+module.exports.downloadExpenseReport = async (req, res) => {
+  try {
+    // get
+    let expenses = await req.user.getExpenses();
+
+    if (expenses.length == 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No Expense Found",
+      });
+    }
+
+    expenses = expenses.map((expenseObj) => {
+      const { id, expenseAmount, category, description, updatedAt, createdAt } =
+        expenseObj;
+      return {
+        id,
+        expenseAmount,
+        category,
+        description,
+        createdAt,
+        updatedAt,
+      };
+    });
+
+    let csv = await convertFromJSON_to_CSV(expenses);
+    //we are gonna send this csv to aws
+    let fileName = "Expense.csv";
+    csv = JSON.stringify(csv);
+    let fileUrl = uploadToS3(csv, fileName); // data and filename
+
+    res.status(200).json({ success: true, fileName, fileUrl });
+  } catch (error) {
+    console.log("\n\n Err in download report \n ", error, "\n\n");
+    res.status(500).json({ success: false, error });
+  }
+};
+
+function uploadToS3(data, fileName) {
+  const BUCKET_NAME = process.env.S3_BUCKET_NAME;
+  const IAM_USER_ACCESS_KEY = process.env.IAM_USER_ACCESS_KEY;
+  const IAM_USER_SECRET_KEY = process.env.IAM_USER_SECRET_KEY;
+
+  let s3bucket = new AWS.S3({
+    accessKeyId: IAM_USER_ACCESS_KEY,
+    secretAccessKey: IAM_USER_SECRET_KEY,
+  });
+
+  s3bucket.createBucket(() => {
+    var params = {
+      Bucket: BUCKET_NAME,
+      Key: fileName,
+      Body: data,
+    };
+
+    s3bucket.upload(params, (err, s3successResponse) => {
+      if (err) {
+        console.log("\n \n something Went wrong ", err);
+      } else {
+        console.log("\n \n Success ", s3successResponse);
+      }
+    });
+  });
+}

@@ -75,7 +75,7 @@ async function downloadFile() {
     let a = document.createElement("a");
 
     a.href = response.data.fileUrl;
-    a.download = response.data.filename;
+    a.download = response.data.fileName;
     a.click();
   } catch (error) {
     console.log(error);
