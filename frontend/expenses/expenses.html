@@ -65,7 +65,16 @@
         </div>
       </form>
       <h3 class="error-msg hidden" style="color: red"></h3>
+
       <div class="box2">
+        <!-- <label for="ExpanaseType"> Result to display </label>
+        <select id="ExpanaseType">
+          <option value="food">Food</option>
+          <option value="movie">Movie</option>
+          <option value="fuel">Fuel</option>
+          <option value="other" selected>Other</option>
+        </select> -->
+
         <ul id="listExpense">
           <!-- <li>
               
@@ -76,8 +85,15 @@
       </div>
     </div>
 
-    <!-- extra -->
+    <!-- popup  -->
     <div id="popupCard" class="hidden"></div>
+
+    <!-- pagination  -->
+    <div id="expense-pagination">
+      <button class="pagi-btn" id="prevPg" style="visibility: hidden"><</button>
+      <button class="pagi-btn" id="currentPg">0</button>
+      <button class="pagi-btn" id="nextPg" style="visibility: hidden">></button>
+    </div>
 
     <!-- axios  -->
     <script

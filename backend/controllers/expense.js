@@ -54,7 +54,35 @@ module.exports.postAddExpense = async (req, res, next) => {
 module.exports.getAllExpense = async (req, res, next) => {
   try {
     // let expenses = await Expense.findAll({ where: { userId: req.user.id } });
-    let expenses = await getExpenses(req);
+
+    let page = parseInt(req.query.page);
+
+    let skipPagination = false;
+    if (!page) {
+      skipPagination = true;
+    }
+
+    let limit = 2;
+
+    let totalCount = 0;
+    totalCount = await Expense.count({ where: { userId: req.user.id } });
+    const lastPage = Math.ceil(totalCount / limit);
+
+    const offset = (page - 1) * Number(limit);
+
+    const pagination = {
+      offset,
+      limit,
+    };
+
+    let expense;
+
+    if (skipPagination) {
+      expenses = await getExpenses(req);
+    } else {
+      expenses = await getExpenses(req, pagination);
+    }
+    // let expenses = await getExpenses(req, pagination);
     // console.log("\n \n \n ", expenses);
 
     if (expenses.length == 0) {
@@ -77,9 +105,25 @@ module.exports.getAllExpense = async (req, res, next) => {
       };
     });
 
-    res
-      .status(200)
-      .json({ success: true, message: "Found All Expenses", expenses });
+    let pagiInfo;
+
+    if (!skipPagination) {
+      pagiInfo = {
+        total: totalCount,
+        hasNextPage: limit * page < totalCount,
+        hasPrevPage: page > 1,
+        nextPg: page + 1,
+        prevPg: page - 1,
+        lastPage: lastPage,
+      };
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Found All Expenses",
+      expenses,
+      ...pagiInfo,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({

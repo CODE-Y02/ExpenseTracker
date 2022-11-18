@@ -8,6 +8,6 @@ temp.js
 # environments
 .env
 
-
+/backend
 
 sendgrid.env

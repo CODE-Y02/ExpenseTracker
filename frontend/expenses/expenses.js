@@ -6,6 +6,7 @@ let form = document.getElementById("form");
 
 //on dom loaded
 window.addEventListener("DOMContentLoaded", (e) => {
+  e.preventDefault();
   const { token, membership } = JSON.parse(
     localStorage.getItem("ExpenseTracker")
   );
@@ -16,29 +17,45 @@ window.addEventListener("DOMContentLoaded", (e) => {
   }
   disolayCard("Welcome to Expense tracker ", 2000);
 
-  getAll(e);
+  fetchExpenses(1);
 });
 
 //On submit
 form.addEventListener("submit", (e) => createOrUpdateExpense(e));
 
-//getAll
+//fetchExpenses
 
-async function getAll(event) {
-  event.preventDefault();
-
+async function fetchExpenses(page = 1, limit) {
   try {
+    document.getElementById("listExpense").innerHTML = "";
+
     const { token, membership } = JSON.parse(
       localStorage.getItem("ExpenseTracker")
     );
 
-    let res = await axios.get(`http://localhost:3000/expense`, {
-      headers: {
-        Authorization: token,
-      },
-    });
+    let res = await axios.get(
+      `http://localhost:3000/expense?page=${page}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
 
-    console.log(res.data.expenses);
+    // console.log(res.data);
+
+    const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = res.data;
+
+    pagination(
+      page,
+      hasPrevPage,
+      hasNextPage,
+      prevPg,
+      nextPg,
+      lastPage,
+      "expense-pagination",
+      fetchExpenses
+    );
 
     //disolay all exp
     res.data.expenses.map((expense) => {
@@ -288,4 +305,70 @@ function disolayCard(message, timeout) {
     div.classList.add("hidden");
     div.classList.remove("flex-center");
   }, timeout);
+}
+
+//handle pagingion
+function pagination(
+  currPg,
+  hasPrev,
+  hasNext,
+  prevPg,
+  nextPg,
+  lastPage,
+  paginationLocID,
+  cb
+) {
+  let paginationBox = document.getElementById(`${paginationLocID}`);
+  paginationBox.innerHTML = "";
+
+  let currBtn, nextBtn, prevBtn, lastBtn, firstBtn;
+  if (hasPrev) {
+    prevBtn = document.createElement("button");
+    prevBtn.className = "pagi-btn prevPg";
+
+    prevBtn.innerText = prevPg;
+    prevBtn.addEventListener("click", () => {
+      cb(prevPg);
+    });
+
+    //if previous exist then first page is also avail
+    firstBtn = document.createElement("button");
+    firstBtn.className = "pagi-btn";
+    firstBtn.innerText = "<<";
+    firstBtn.addEventListener("click", () => {
+      cb(1);
+    });
+
+    paginationBox.appendChild(firstBtn);
+    paginationBox.appendChild(prevBtn);
+  }
+
+  if (currPg) {
+    currBtn = document.createElement("button");
+    currBtn.className = "pagi-btn currentPg";
+
+    currBtn.innerText = currPg;
+
+    paginationBox.appendChild(currBtn);
+  }
+  if (hasNext) {
+    nextBtn = document.createElement("button");
+    nextBtn.className = "pagi-btn nextPg";
+
+    nextBtn.innerText = nextPg;
+    nextBtn.addEventListener("click", () => {
+      cb(nextPg);
+    });
+
+    //if next exist then last page is also avail
+    lastBtn = document.createElement("button");
+    lastBtn.className = "pagi-btn";
+    lastBtn.innerText = ">>";
+    lastBtn.addEventListener("click", () => {
+      cb(lastPage);
+    });
+
+    paginationBox.appendChild(nextBtn);
+    paginationBox.appendChild(lastBtn);
+  }
 }

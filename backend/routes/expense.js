@@ -6,8 +6,6 @@ const expenseController = require("../controllers/expense");
 
 const { authentication, isPremiumUser } = require("../middleware/auth");
 
-router.get("/", authentication, expenseController.getAllExpense);
-
 router.post("/addExpense", authentication, expenseController.postAddExpense);
 
 router.delete(
@@ -29,5 +27,7 @@ router.get(
   isPremiumUser,
   expenseController.getExpenseReportDownloadHistory
 );
+
+router.get("", authentication, expenseController.getAllExpense);
 
 module.exports = router;
