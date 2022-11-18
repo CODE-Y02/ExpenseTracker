@@ -10,6 +10,10 @@ const Download = sequelize.define("download", {
     allowNull: false,
     primaryKey: true,
   },
+  type: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
   fileUrl: {
     type: Sequelize.STRING,
     allowNull: false,

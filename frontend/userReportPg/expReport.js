@@ -3,18 +3,17 @@ window.addEventListener("DOMContentLoaded", (e) => {
   const { token } = JSON.parse(localStorage.getItem("ExpenseTracker"));
 
   //empty table
-  let table1 = document.getElementById("table1");
-
-  let td = document.getElementById("table-data-body");
-
-  td.innerHTML = "";
+  let expenseTableBody = document.getElementById("table-data-body");
+  expenseTableBody.innerHTML = "";
 
   fetchAllExpenses(token);
 
   // set generic time
-
   document.querySelector(".info  h3").innerText =
     new Date().toLocaleDateString();
+
+  // fetch download history
+  fetchHistory(token);
 });
 
 async function fetchAllExpenses(token) {
@@ -35,6 +34,37 @@ async function fetchAllExpenses(token) {
       //   console.log(createdAt);
 
       createExpenseIntable(createdAt, category, expenseAmount, description);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function fetchHistory(token) {
+  try {
+    let response = await axios.get(
+      "http://localhost:3000/expense/download/history",
+      {
+        headers: {
+          authorization: token,
+        },
+      }
+    );
+
+    // console.log(response.data);
+
+    let historyTableBody = document.getElementById("table-download-history");
+    historyTableBody.innerHTML = "";
+
+    response.data.history.forEach((downloadObj, index) => {
+      let { fileName, fileUrl, createdAt } = downloadObj;
+
+      // createdAt = createdAt.substring(0, 10);
+      // console.log(fileName, fileUrl, createdAt);
+
+      addHistoryInTable(createdAt, fileUrl, index);
+
+      // createExpenseIntable(createdAt, category, expenseAmount, description);
     });
   } catch (error) {
     console.log(error);
@@ -77,7 +107,27 @@ async function downloadFile() {
     a.href = response.data.fileUrl;
     a.download = response.data.fileName;
     a.click();
+
+    fetchHistory(token);
   } catch (error) {
     console.log(error);
   }
+}
+
+function addHistoryInTable(date, fileUrl, idx) {
+  let td = document.getElementById("table-download-history");
+  let newRow = `
+      <tr>
+        <th scope="row">${idx + 1}</th>
+        <td>${date}</td>
+        <td>
+            <a href="${fileUrl}" target="_blank"         style="text-decoration: none;"            
+            rel="noopener noreferrer" >
+              redownload
+            </a>
+        </td>
+      </tr>
+   `;
+
+  td.innerHTML += newRow;
 }

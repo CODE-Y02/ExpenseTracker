@@ -6,7 +6,7 @@ const { convertFromJSON_to_CSV } = require("../util/converters");
 
 // services
 const { uploadToS3 } = require("../services/S3service");
-const { getExpenses } = require("../services/userservices");
+const { getExpenses, getDownloads } = require("../services/userservices");
 
 module.exports.postAddExpense = async (req, res, next) => {
   try {
@@ -54,7 +54,7 @@ module.exports.postAddExpense = async (req, res, next) => {
 module.exports.getAllExpense = async (req, res, next) => {
   try {
     // let expenses = await Expense.findAll({ where: { userId: req.user.id } });
-    let expenses = await req.user.getExpenses();
+    let expenses = await getExpenses(req);
     // console.log("\n \n \n ", expenses);
 
     if (expenses.length == 0) {
@@ -179,9 +179,47 @@ module.exports.downloadExpenseReport = async (req, res) => {
         .json({ success: false, message: "Source Not Found" });
     }
 
+    //save as history in db
+    await req.user.createDownload({
+      type: "expenseReport",
+      fileUrl,
+      folder: `Expense${req.user.id}`,
+      fileName,
+    });
+
     res.status(200).json({ success: true, fileName, fileUrl });
   } catch (error) {
     console.log("\n\n Err in download report \n ", error, "\n\n");
     res.status(500).json({ success: false, error });
+  }
+};
+
+// get download history
+
+module.exports.getExpenseReportDownloadHistory = async (req, res) => {
+  try {
+    const where = {
+      type: "expenseReport",
+    };
+    let history = await getDownloads(req, where);
+
+    if (!history) {
+      return res.status(404).json({
+        success: false,
+        message: "No download history Found",
+      });
+    }
+
+    // if history found then
+    res.json({
+      success: true,
+      history,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

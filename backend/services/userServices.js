@@ -8,3 +8,7 @@ module.exports.getExpenses = (req, where) => {
 
   return req.user.getExpenses(where);
 };
+
+module.exports.getDownloads = (req, where) => {
+  return req.user.getDownloads(where);
+};

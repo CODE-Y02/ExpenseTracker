@@ -23,4 +23,11 @@ router.get(
   expenseController.downloadExpenseReport
 );
 
+router.get(
+  "/download/history",
+  authentication,
+  isPremiumUser,
+  expenseController.getExpenseReportDownloadHistory
+);
+
 module.exports = router;
