@@ -62,7 +62,9 @@ module.exports.getAllExpense = async (req, res, next) => {
       skipPagination = true;
     }
 
-    let limit = 2;
+    let limit = parseInt(req.query.limit);
+
+    if (limit > 20 || limit < 1) limit = 5;
 
     let totalCount = 0;
     totalCount = await Expense.count({ where: { userId: req.user.id } });
@@ -75,7 +77,7 @@ module.exports.getAllExpense = async (req, res, next) => {
       limit,
     };
 
-    let expense;
+    let expenses;
 
     if (skipPagination) {
       expenses = await getExpenses(req);

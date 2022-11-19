@@ -25,7 +25,7 @@ form.addEventListener("submit", (e) => createOrUpdateExpense(e));
 
 //fetchExpenses
 
-async function fetchExpenses(page = 1, limit) {
+async function fetchExpenses(page = 1, limit = 5) {
   try {
     document.getElementById("listExpense").innerHTML = "";
 
