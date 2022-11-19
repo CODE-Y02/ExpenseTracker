@@ -56,36 +56,25 @@ module.exports.getAllExpense = async (req, res, next) => {
     // let expenses = await Expense.findAll({ where: { userId: req.user.id } });
 
     let page = parseInt(req.query.page);
-
-    let skipPagination = false;
-    if (!page) {
-      skipPagination = true;
-    }
-
     let limit = parseInt(req.query.limit);
 
-    if (limit > 20 || limit < 1) limit = 5;
+    if (limit > 20 || limit < 1 || !limit) limit = 5;
 
     let totalCount = 0;
     totalCount = await Expense.count({ where: { userId: req.user.id } });
     const lastPage = Math.ceil(totalCount / limit);
 
-    const offset = (page - 1) * Number(limit);
+    const offset = (page - 1) * limit;
 
     const pagination = {
       offset,
       limit,
     };
 
-    let expenses;
+    let expenses = await getExpenses(req, pagination);
 
-    if (skipPagination) {
-      expenses = await getExpenses(req);
-    } else {
-      expenses = await getExpenses(req, pagination);
-    }
     // let expenses = await getExpenses(req, pagination);
-    // console.log("\n \n \n ", expenses);
+    // console.log("\n \n \n ", limit);
 
     if (expenses.length == 0) {
       return res.status(404).json({
@@ -107,18 +96,15 @@ module.exports.getAllExpense = async (req, res, next) => {
       };
     });
 
-    let pagiInfo;
-
-    if (!skipPagination) {
-      pagiInfo = {
-        total: totalCount,
-        hasNextPage: limit * page < totalCount,
-        hasPrevPage: page > 1,
-        nextPg: page + 1,
-        prevPg: page - 1,
-        lastPage: lastPage,
-      };
-    }
+    let pagiInfo = {
+      total: totalCount,
+      hasNextPage: limit * page < totalCount,
+      hasPrevPage: page > 1,
+      nextPg: page + 1,
+      prevPg: page - 1,
+      lastPage: lastPage,
+      limit,
+    };
 
     res.status(200).json({
       success: true,
