@@ -9,5 +9,8 @@ temp.js
 # environments
 .env
 
-
 sendgrid.env
+
+#keys 
+backend/server.cert
+backend/server.key

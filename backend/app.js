@@ -1,4 +1,5 @@
 const dotenv = require("dotenv");
+const https = require("https");
 const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -12,6 +13,9 @@ const sequelize = require("./util/database");
 
 const app = express();
 dotenv.config({ path: "../.env" });
+
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.cert");
 
 const cors = require("cors");
 app.use(cors());
@@ -74,7 +78,12 @@ const startApp = async () => {
     // await sequelize.sync({ force: true });
     await sequelize.sync();
 
-    app.listen(process.env.PORT || 3000);
+    // ssl
+    https
+      .createServer({ key: privateKey, cert: certificate }, app)
+      .listen(process.env.PORT || 3000);
+
+    // app.listen(process.env.PORT || 3000); // NO ssl
   } catch (error) {
     console.log("\n \n \n \n ");
     console.log({ errorMsg: error.message, error });
