@@ -11,11 +11,12 @@ const compression = require("compression");
 const bodyParser = require("body-parser");
 const sequelize = require("./util/database");
 
-const app = express();
 dotenv.config({ path: "../.env" });
 
 const privateKey = fs.readFileSync("server.key");
 const certificate = fs.readFileSync("server.cert");
+
+const app = express();
 
 const cors = require("cors");
 app.use(cors());
@@ -71,6 +72,10 @@ app.use("/payment", paymentRouter);
 app.use("/password", passwordRoute);
 app.use("/leaderboard", leaderBoardRoute);
 
+app.use("/", (req, res) => {
+  res.status(404).json({ success: false });
+});
+
 // /expense-report/-->  download --> get all expense of user and download them as list
 
 const startApp = async () => {
@@ -79,11 +84,17 @@ const startApp = async () => {
     await sequelize.sync();
 
     // ssl
-    https
-      .createServer({ key: privateKey, cert: certificate }, app)
-      .listen(process.env.PORT || 3000);
+    // https
+    //   .createServer({ key: privateKey, cert: certificate }, app)
+    //   .listen(process.env.PORT || 3000, () => {
+    //     console.log(
+    //       `  \n\n\n  Server running on port ==== > ${
+    //         process.env.PORT || 3000
+    //       } \n\n`
+    //     );
+    //   });
 
-    // app.listen(process.env.PORT || 3000); // NO ssl
+    app.listen(process.env.PORT || 3000); // NO ssl
   } catch (error) {
     console.log("\n \n \n \n ");
     console.log({ errorMsg: error.message, error });
