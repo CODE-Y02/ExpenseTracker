@@ -1,6 +1,12 @@
-const path = require("path");
 const dotenv = require("dotenv");
 const express = require("express");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const fs = require("fs");
+const path = require("path");
+
+const compression = require("compression");
+
 const bodyParser = require("body-parser");
 const sequelize = require("./util/database");
 
@@ -26,6 +32,19 @@ const LeaderBoard = require("./models/leaderboard");
 const ForgotPassword = require("./models/forgotPassword");
 const Download = require("./models/download");
 
+// log
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  {
+    flags: "a",
+  }
+);
+
+app.use(helmet()); // settion response headers
+app.use(compression()); // compress response
+app.use(morgan("combined", { stream: accessLogStream }));
+
+// Association
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
@@ -55,7 +74,7 @@ const startApp = async () => {
     // await sequelize.sync({ force: true });
     await sequelize.sync();
 
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
   } catch (error) {
     console.log("\n \n \n \n ");
     console.log({ errorMsg: error.message, error });

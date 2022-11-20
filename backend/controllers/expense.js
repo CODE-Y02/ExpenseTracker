@@ -55,7 +55,7 @@ module.exports.getAllExpense = async (req, res, next) => {
   try {
     // let expenses = await Expense.findAll({ where: { userId: req.user.id } });
 
-    let page = parseInt(req.query.page);
+    let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit);
 
     if (limit > 20 || limit < 1 || !limit) limit = 5;
@@ -121,6 +121,7 @@ module.exports.getAllExpense = async (req, res, next) => {
   }
 };
 
+// delete users expense
 module.exports.deleteExpense = async (req, res, next) => {
   try {
     const expenseId = req.params.expenseId;
@@ -227,7 +228,6 @@ module.exports.downloadExpenseReport = async (req, res) => {
 };
 
 // get download history
-
 module.exports.getExpenseReportDownloadHistory = async (req, res) => {
   try {
     const where = {
