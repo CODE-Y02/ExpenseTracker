@@ -13,8 +13,8 @@ const sequelize = require("./util/database");
 
 dotenv.config({ path: "../.env" });
 
-const privateKey = fs.readFileSync("server.key");
-const certificate = fs.readFileSync("server.cert");
+// const privateKey = fs.readFileSync("server.key");
+// const certificate = fs.readFileSync("server.cert");
 
 const app = express();
 
@@ -94,7 +94,7 @@ const startApp = async () => {
     //     );
     //   });
 
-    // app.listen(process.env.PORT || 3000); // NO ssl
+    app.listen(process.env.PORT || 3000); // NO ssl
   } catch (error) {
     console.log("\n \n \n \n ");
     console.log({ errorMsg: error.message, error });
