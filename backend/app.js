@@ -84,15 +84,15 @@ const startApp = async () => {
     await sequelize.sync();
 
     // ssl
-    https
-      .createServer({ key: privateKey, cert: certificate }, app)
-      .listen(process.env.PORT || 3000, () => {
-        console.log(
-          `  \n\n\n  Server running on port ==== > ${
-            process.env.PORT || 3000
-          } \n\n`
-        );
-      });
+    // https
+    //   .createServer({ key: privateKey, cert: certificate }, app)
+    //   .listen(process.env.PORT || 3000, () => {
+    //     console.log(
+    //       `  \n\n\n  Server running on port ==== > ${
+    //         process.env.PORT || 3000
+    //       } \n\n`
+    //     );
+    //   });
 
     // app.listen(process.env.PORT || 3000); // NO ssl
   } catch (error) {
